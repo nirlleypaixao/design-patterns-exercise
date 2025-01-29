@@ -97,17 +97,13 @@ public class BillingTest {
         Usage usage = new Usage(12500, 70000);
 
         // Act
-        // Calculating the cost per user and the cost of storage using the methods of the EnterprisePlanPricing class
-        Money calculatedUserCost = contract.getPricingStrategy().calculateUserCost(usage.users);
-        Money calculatedStorageCost = contract.getPricingStrategy().calculateStorageCost(usage.storageInGigabytes, usage.users);
-
         // Calculating the expected invoice with calculated values
         Invoice expected = new Invoice(
                 "EnterprisePlanPricing",  // Nome da estratégia
                 12500,
                 70000,
-                calculatedUserCost,  // Dynamically calculated cost per users
-                calculatedStorageCost);  // Dynamically calculated excess storage cost
+                Money.Factory.of(1_823_750, "USD"), // USD 145.90 per user on this specific contract
+                Money.Factory.of(6_750, "USD"));   // USD 0.90 per GB used above the free quota
 
         // Generating the invoice using the invoice method of the Billing class
         Invoice invoice = billing.invoice(contract, usage);
