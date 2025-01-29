@@ -11,8 +11,8 @@ public class Contract {
         this.pricingStrategy = pricingStrategy;
     }
 
-    public void setPricingStrategy(Money dynamicPricePerGB, Money dynamicPricePerUser) {
-        this.pricingStrategy = new EnterprisePlanPricing(dynamicPricePerGB, dynamicPricePerUser);
+    public void setPricingStrategy(Money dynamicPricePerUser, Money dynamicPricePerGB) {
+        this.pricingStrategy = new EnterprisePlanPricing(dynamicPricePerUser, dynamicPricePerGB);
     }
 
     public PlanPricingStrategy getPricingStrategy() {

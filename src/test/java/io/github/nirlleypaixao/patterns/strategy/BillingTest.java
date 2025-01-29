@@ -88,7 +88,7 @@ public class BillingTest {
         Money dynamicPricePerGB = Money.Factory.of(0.90, "USD");  // Preço por GB excedente
 
         // Creating a new contract with dynamicprices for User and Storage
-        Contract contract = new Contract("John's Enterprise", new EnterprisePlanPricing(dynamicPricePerGB, dynamicPricePerUser));
+        Contract contract = new Contract("John's Enterprise", new EnterprisePlanPricing(dynamicPricePerUser, dynamicPricePerGB));
 
         // Using Setter for change dynamically the prices for User and Storage
         contract.setPricingStrategy(dynamicPricePerUser, dynamicPricePerGB);
@@ -121,7 +121,8 @@ public class BillingTest {
         Money dynamicPricePerGB = Money.Factory.of(0.90, "USD");  // Preço por GB excedente
 
         // Creating a new contract with dynamicprices for User and Storage
-        Contract contract = new Contract("John's Enterprise", new EnterprisePlanPricing(dynamicPricePerGB, dynamicPricePerUser));
+        Contract contract = new Contract("John's Enterprise", new EnterprisePlanPricing(dynamicPricePerUser, dynamicPricePerGB));
+
 
         // Using Setter for change dynamically the prices for User and Storage
         contract.setPricingStrategy(dynamicPricePerUser, dynamicPricePerGB);
