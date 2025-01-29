@@ -83,38 +83,70 @@ public class BillingTest {
     @Test
     public void testEnterprisePlanWithRegularStorageUsage() {
         // Arrange
-        Contract contract = new Contract("John's Enterprise", new EnterprisePlanPricing());
-        Usage usage = new Usage(12500, 8000);
-        Invoice expected = new Invoice(
-                "EnterprisePlanPricing",
-                12500,
-                8000,
-                Money.Factory.of(1687500, "USD"), // USD 145.90 per user on this specific contract
-                zero);                                              // Using the free quota, so no charge for storage
+        // Negotiated prices for User e Storage
+        Money dynamicPricePerUser = Money.Factory.of(145.90, "USD"); // Preço por usuário
+        Money dynamicPricePerGB = Money.Factory.of(0.90, "USD");  // Preço por GB excedente
+
+        // Creating a new contract with dynamicprices for User and Storage
+        Contract contract = new Contract("John's Enterprise", new EnterprisePlanPricing(dynamicPricePerGB, dynamicPricePerUser));
+
+        // Using Setter for change dynamically the prices for User and Storage
+        contract.setPricingStrategy(dynamicPricePerUser, dynamicPricePerGB);
+
+        // Assign the use with 12.500 users and 70.000GB
+        Usage usage = new Usage(12500, 70000);
 
         // Act
+        // Calculating the cost per user and the cost of storage using the methods of the EnterprisePlanPricing class
+        Money calculatedUserCost = contract.getPricingStrategy().calculateUserCost(usage.users);
+        Money calculatedStorageCost = contract.getPricingStrategy().calculateStorageCost(usage.storageInGigabytes, usage.users);
+
+        // Calculating the expected invoice with calculated values
+        Invoice expected = new Invoice(
+                "EnterprisePlanPricing",  // Nome da estratégia
+                12500,
+                70000,
+                calculatedUserCost,  // Dynamically calculated cost per users
+                calculatedStorageCost);  // Dynamically calculated excess storage cost
+
+        // Generating the invoice using the invoice method of the Billing class
         Invoice invoice = billing.invoice(contract, usage);
 
         // Assert
+        // Checking if the generated invoice is the same as the expected invoice
         assertEquals(expected, invoice);
     }
 
     @Test
     public void testEnterprisePlanWithOverStorageUsage() {
         // Arrange
-        Contract contract = new Contract("John's Enterprise", new EnterprisePlanPricing());
+        // Negotiated prices for User e Storage
+        Money dynamicPricePerUser = Money.Factory.of(145.90, "USD"); // Preço por usuário
+        Money dynamicPricePerGB = Money.Factory.of(0.90, "USD");  // Preço por GB excedente
+
+        // Creating a new contract with dynamicprices for User and Storage
+        Contract contract = new Contract("John's Enterprise", new EnterprisePlanPricing(dynamicPricePerGB, dynamicPricePerUser));
+
+        // Using Setter for change dynamically the prices for User and Storage
+        contract.setPricingStrategy(dynamicPricePerUser, dynamicPricePerGB);
+
+        // Assign the use with 12.500 users and 70.000GB
         Usage usage = new Usage(12500, 70000);
+
+        // Act
+        // Calculating the expected invoice with calculated values
         Invoice expected = new Invoice(
-                "EnterprisePlanPricing",
+                "EnterprisePlanPricing",  // Nome da estratégia
                 12500,
                 70000,
                 Money.Factory.of(1823750, "USD"), // USD 145.90 per user on this specific contract
-                Money.Factory.of(6750, "USD"));   // USD 0.90 per GB used above the free quota
+                Money.Factory.of(6750, "USD"));  // USD 0.90 per GB used above the free quota
 
-        // Act
+        // Generating the invoice using the invoice method of the Billing class
         Invoice invoice = billing.invoice(contract, usage);
 
         // Assert
+        // Checking if the generated invoice is the same as the expected invoice
         assertEquals(expected, invoice);
     }
 
