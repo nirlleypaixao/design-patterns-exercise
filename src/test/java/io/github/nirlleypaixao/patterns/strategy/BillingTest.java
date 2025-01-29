@@ -90,9 +90,6 @@ public class BillingTest {
         // Creating a new contract with dynamicprices for User and Storage
         Contract contract = new Contract("John's Enterprise", new EnterprisePlanPricing(dynamicPricePerUser, dynamicPricePerGB));
 
-        // Using Setter for change dynamically the prices for User and Storage
-        contract.setPricingStrategy(dynamicPricePerUser, dynamicPricePerGB);
-
         // Assign the use with 12.500 users and 70.000GB
         Usage usage = new Usage(12500, 70000);
 
@@ -125,7 +122,7 @@ public class BillingTest {
 
 
         // Using Setter for change dynamically the prices for User and Storage
-        contract.setPricingStrategy(dynamicPricePerUser, dynamicPricePerGB);
+        //contract.setPricingStrategy(dynamicPricePerUser, dynamicPricePerGB);
 
         // Assign the use with 12.500 users and 70.000GB
         Usage usage = new Usage(12500, 70000);
